@@ -23,7 +23,16 @@
     <v-btn text to="/">Home</v-btn>
     <v-btn text to="/destinations">Destinations</v-btn>
     <v-btn text to="/about">About</v-btn>
-    <v-btn text @click="dialog = true">Login</v-btn>
+
+    <v-btn v-if="!userStore.username" text @click="dialog = true">Login</v-btn>
+      <v-menu v-else>
+        <template v-slot:activator="{ props }">
+          <v-btn v-bind="props" text>{{ userStore.username }}</v-btn>
+        </template>
+        <v-list>
+          <v-list-item @click="logout">Logout</v-list-item>
+        </v-list>
+      </v-menu>
   </v-app-bar>
 
   <!-- 侧边导航栏 -->
@@ -57,11 +66,13 @@
 <script setup lang="ts">
 import {ref} from "vue"
 import Login from "./components/Login.vue"; 
-
+import { useUserStore } from "./store/userStore";
 const drawer = ref(false)
-
 const searchQuery = ref('')   // 搜索框的输入内容
 const loading = ref(false)    // 加载状态
+const dialog = ref(false); // 控制登录弹窗显示
+const userStore=useUserStore();
+
 
 // 处理点击搜索图标时的逻辑
 function onClick () {
@@ -71,8 +82,10 @@ function onClick () {
     alert(`Searching for: ${searchQuery.value}`)  // 显示搜索的内容
   }, 2000)  // 模拟加载时间
 }
+function logout() {
+  userStore.logout();
+}
 
-const dialog = ref(false); // 控制登录弹窗显示
 
 
 </script>
