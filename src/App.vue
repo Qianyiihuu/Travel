@@ -1,30 +1,89 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+  <v-app>
+    <v-app-bar color="primary" app>
+    <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+    <v-toolbar-title>LOOK</v-toolbar-title>
+    <v-spacer></v-spacer>
+
+      <v-text-field
+        v-model="searchQuery"  
+        :loading="loading"     
+        density="compact"
+        prepend-inner-icon="mdi-magnify"  
+        label="Search destinations"         
+        hide-details      
+        single-line  
+        variant="solo" 
+        class="search-bar"
+        @click:append-inner="onClick"  >
+      ></v-text-field>
+
+
+
+    <v-btn text to="/">Home</v-btn>
+    <v-btn text to="/destinations">Destinations</v-btn>
+    <v-btn text to="/about">About</v-btn>
+    <v-btn text @click="dialog = true">Login</v-btn>
+  </v-app-bar>
+
+  <!-- 侧边导航栏 -->
+  <v-navigation-drawer v-model="drawer" app>
+    <v-list>
+      <v-list-item title="Home" to="/"></v-list-item>
+      <v-list-item title="Destinations" to="/destinations"></v-list-item>
+      <v-list-item title="About" to="/about"></v-list-item>
+    </v-list>
+  </v-navigation-drawer>
+
+   <!-- 页面主体 -->
+   <v-main>
+    <router-view></router-view>
+  </v-main>
+
+  <!-- 登录弹窗 -->
+  <v-dialog v-model="dialog" max-width="400">
+      <Login @close="dialog = false" />
+    </v-dialog>
+
+  <!-- 页脚 -->
+  <v-footer color="primary" app>
+    <v-container class="text-center white--text">
+      &copy; {{ new Date().getFullYear() }} 旅游探索 | 让旅行更精彩
+    </v-container>
+  </v-footer>
+  </v-app>
 </template>
 
+<script setup lang="ts">
+import {ref} from "vue"
+import Login from "./components/Login.vue"; 
+
+const drawer = ref(false)
+
+const searchQuery = ref('')   // 搜索框的输入内容
+const loading = ref(false)    // 加载状态
+
+// 处理点击搜索图标时的逻辑
+function onClick () {
+  loading.value = true   // 启动加载状态
+  setTimeout(() => {
+    loading.value = false  // 停止加载状态
+    alert(`Searching for: ${searchQuery.value}`)  // 显示搜索的内容
+  }, 2000)  // 模拟加载时间
+}
+
+const dialog = ref(false); // 控制登录弹窗显示
+
+
+</script>
+
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.search-bar {
+  max-width: 300px; 
+
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+.v-input__append-inner .v-icon {
+  display: none;
 }
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
+
 </style>
