@@ -13,6 +13,8 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -25,9 +27,11 @@ a:hover {
 body {
   margin: 0;
   display: flex;
+  flex-wrap: wrap; /* 避免子元素溢出 */
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  overflow-x: hidden; /* 禁止水平滚动 */
 }
 
 h1 {
@@ -59,9 +63,10 @@ button:focus-visible {
 }
 
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  max-width: 100%;
+  margin: 0 0;
+  width:100%;
+  padding: 0;
   text-align: center;
 }
 
@@ -77,3 +82,18 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+img {
+  max-width: 100%; /* 让图片最大宽度不超过父元素 */
+  height: auto;
+}
+
+.v-application {
+  width: 100vw;
+  overflow-x: hidden; /* 禁止水平滚动 */
+}
+
+
+
+
+

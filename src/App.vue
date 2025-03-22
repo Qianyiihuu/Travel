@@ -2,7 +2,7 @@
   <v-app>
     <v-app-bar color="primary" app>
     <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-    <v-toolbar-title>LOOK</v-toolbar-title>
+    <v-toolbar-title>KLOOK</v-toolbar-title>
     <v-spacer></v-spacer>
 
       <v-text-field
@@ -22,6 +22,7 @@
 
     <v-btn text to="/">Home</v-btn>
     <v-btn text to="/destinations">Destinations</v-btn>
+    <v-btn text to="/explore">Explore KLOOK</v-btn>
     <v-btn text to="/about">About</v-btn>
 
     <v-btn v-if="!userStore.username" text @click="dialog = true">Login</v-btn>
@@ -41,11 +42,25 @@
       <v-list-item title="Home" to="/"></v-list-item>
       <v-list-item title="Destinations" to="/destinations"></v-list-item>
       <v-list-item title="About" to="/about"></v-list-item>
-    </v-list>
+
+ <!-- 占位符，Push Login/Logout 到底部 -->
+ <v-spacer></v-spacer>
+
+<!-- 未登录时显示 Login -->
+<v-list-item v-if="!userStore.username" text @click="dialog = true">
+  <v-icon left>mdi-login</v-icon> Login
+</v-list-item>
+
+<!-- 已登录时显示 Logout -->
+<v-list-item v-else text @click="logout">
+  <v-icon left>mdi-logout</v-icon> Logout
+</v-list-item>
+</v-list>
+
   </v-navigation-drawer>
 
    <!-- 页面主体 -->
-   <v-main>
+   <v-main >
     <router-view></router-view>
   </v-main>
 
@@ -62,6 +77,7 @@
   </v-footer>
   </v-app>
 </template>
+
 
 <script setup lang="ts">
 import {ref} from "vue"
@@ -82,6 +98,7 @@ function onClick () {
     alert(`Searching for: ${searchQuery.value}`)  // 显示搜索的内容
   }, 2000)  // 模拟加载时间
 }
+
 function logout() {
   userStore.logout();
 }
@@ -98,5 +115,11 @@ function logout() {
 .v-input__append-inner .v-icon {
   display: none;
 }
+
+.v-application {
+  width: 100vw;
+  overflow-x: hidden; /* 禁止水平滚动 */
+}
+
 
 </style>
