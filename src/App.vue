@@ -9,7 +9,9 @@ import standard from './components/standard.vue';
 
 </script>
 
-<style scoped>
+<style>
+
+
 </style>
 
 

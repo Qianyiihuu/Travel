@@ -1,10 +1,8 @@
 <template>
     <v-app>
-      <v-app-bar color="primary" :elevation="2">
-        <template v-slot:prepend>
-            <v-app-bar-nav-icon></v-app-bar-nav-icon>
-          </template>
-        <v-app-bar-title>QiiYUU</v-app-bar-title>
+      <v-app-bar color="background" :elevation="2">
+
+        <v-app-bar-title><h2 class="logo">Chef Sheep</h2></v-app-bar-title>
   
         <!-- 以下从最后开始排 -->
         <v-spacer></v-spacer>  
@@ -25,7 +23,7 @@
 
       <v-spacer></v-spacer>
       
-      <v-footer color="primary" app>
+    <v-footer color="background">
     <v-container class="text-center white--text">
       &copy; {{ new Date().getFullYear() }} 旅游探索 | 让旅行更精彩
     </v-container>
@@ -39,7 +37,12 @@
 
   </script>
   
-  <style scoped>
+  <style>
+  .logo{
+    color: #ff4040;
+    text-align: left;
+    margin-left: 10%;
+  }
 
   </style>
   
