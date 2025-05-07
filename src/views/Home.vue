@@ -16,7 +16,7 @@
     </div>
     <!-- banner -->
     <v-carousel
-      height="450"
+      height="550"
       show-arrows="hover"
       cycle
       hide-delimiter-background
@@ -70,7 +70,7 @@
               </v-col>
               <v-col cols="8" class="eventContent">
                 <v-card-title class="eventName">{{ event.name }}</v-card-title>
-                <v-card-subtitle class="eventName">{{
+                <v-card-subtitle class="eventDes">{{
                   event.desc
                 }}</v-card-subtitle>
               </v-col>
@@ -79,7 +79,21 @@
           </v-card>
         </v-col>
       </v-row>
-      <v-btn class="dest-btn">See More</v-btn>
+    </div>
+
+    <div class="next-section">
+      <h2 class="text-center">Where to next?</h2>
+      <v-row>
+        <v-col
+          v-for="(destination, index) in destinations.slice(0, 6)"
+          :key="index"
+          cols="12"
+          sm="2"
+        >
+          <v-card class="next-card">{{ destination.name }}</v-card>
+        </v-col>
+      </v-row>
+      <v-btn class="dest-btn">See All</v-btn>
     </div>
   </v-container>
 </template>
@@ -148,6 +162,14 @@ onMounted(fetchDestinations);
 .eventName {
   height: auto;
   padding-left: 0 !important;
+  font-weight: 400;
+  font-size: 18px;
+}
+.eventDes {
+  height: auto;
+  padding-left: 0 !important;
+  font-weight: 300;
+  font-size: 15px;
 }
 .picture {
   height: 75px;
@@ -188,7 +210,7 @@ onMounted(fetchDestinations);
 
 .title-content {
   position: absolute;
-  top: 80px;
+  top: 140px;
   z-index: 2;
   text-align: left;
   left: 8%;
@@ -196,7 +218,7 @@ onMounted(fetchDestinations);
 
 .search-box {
   position: absolute;
-  top: 210px;
+  top: 270px;
   left: 8%;
   width: 60%;
   z-index: 2;
@@ -233,6 +255,8 @@ onMounted(fetchDestinations);
 .text-center {
   text-align: left;
   margin-left: 10px;
+  margin-top: 50px;
+  font-weight: 500;
 }
 
 .destination-section {
@@ -250,5 +274,8 @@ onMounted(fetchDestinations);
 .dest-btn {
   margin-top: 30px;
   width: 400px;
+}
+.next-card {
+  height: 200px;
 }
 </style>
