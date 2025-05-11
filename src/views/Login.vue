@@ -20,23 +20,30 @@
         outlined
       ></v-text-field>
       <v-btn block color="secondary" @click="handleLogin">Log in</v-btn>
-      <v-btn block color="surface" @click="handleLogin" class="sign-btn"
+      <v-btn block color="surface" @click="regisDialog = true" class="sign-btn"
         >Sign up</v-btn
       >
     </v-card-text>
   </v-card>
+
+  <v-dialog v-model="regisDialog" width="500">
+    <RegisterForm @close="regisDialog = false" />
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
 import { useUserStore } from "../store/userStore";
 import { useRouter } from "vue-router";
+import RegisterForm from "./Register.vue";
+
 const username = ref("");
 const password = ref("");
 const userStore = useUserStore();
 const router = useRouter();
 
 const emit = defineEmits(["close"]); // 定义 `close` 事件
+const regisDialog = ref(false);
 
 const handleLogin = () => {
   if (username.value && password.value) {

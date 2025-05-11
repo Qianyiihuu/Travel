@@ -4,7 +4,7 @@
   <div class="carousel-content">
     <div class="title-content">
       <h2>玩点不一样</h2>
-      <h4>无论旅途在哪，Klook客路随时随地带你开启精彩的玩乐世界！</h4>
+      <h4>无论旅途在哪，Chef Sheep随时随地带你开启精彩的玩乐世界！</h4>
     </div>
     <div class="search-box">
       <v-text-field

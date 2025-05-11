@@ -12,7 +12,19 @@
       <v-btn text to="/home">Home</v-btn>
       <v-btn text to="/destinaitons">Destinations</v-btn>
       <v-btn text to="/about">About</v-btn>
-      <v-btn v-if="userStore.username">{{ userStore.username }}</v-btn>
+      <!-- <v-btn v-if="userStore.username">{{ userStore.username }}</v-btn> -->
+      <v-menu v-if="userStore.username" offset-y>
+        <template #activator="{ props }">
+          <v-btn v-bind="props">
+            {{ userStore.username }}
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item @click="logout">
+            <v-list-item-title> Logout </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
       <v-btn v-else text @click="dialog = true">Login</v-btn>
       <!-- <v-btn text to="/Home">Login</v-appbtn text :to="/Home" -->
     </v-app-bar>
@@ -39,9 +51,15 @@
 import { ref } from "vue";
 import Login from "../views/Login.vue";
 import { useUserStore } from "../store/userStore";
+import router from "../router";
 
 const userStore = useUserStore();
 const dialog = ref(false);
+
+const logout = () => {
+  userStore.logout();
+  router.push("/");
+};
 </script>
 
 <style>
