@@ -21,8 +21,16 @@
       cycle
       hide-delimiter-background
     >
-      <v-carousel-item v-for="color in colors">
-        <v-sheet :color="color" class="color-content"> </v-sheet>
+      <v-carousel-item v-for="banner in bannerArray">
+        <v-img
+          :src="banner"
+          cover
+          class="color-content"
+          loading="lazy"
+          alt="轮播图"
+        >
+        </v-img>
+        <div class="overlay"></div>
         <!-- <div class="d-flex fill-height justify-center align-center"></div> -->
       </v-carousel-item>
     </v-carousel>
@@ -40,8 +48,18 @@
           sm="4"
           class="column-interval"
         >
-          <v-card class="card">
-            <v-card :color="colors[index]" width="100%" height="200px"></v-card>
+          <!-- <v-card class="card">
+            <v-card
+              :color="colors[index]"
+              width="100%"
+              height="200px"
+              src="../assets/GreatWall.jpg"
+            ></v-card>
+            <v-card-title>{{ destination.name }}</v-card-title>
+            <v-card-subtitle>{{ destination.location }}</v-card-subtitle>
+          </v-card> -->
+          <v-card class="card" width="90%">
+            <v-img :src="picArray[index]" height="200px" cover></v-img>
             <v-card-title>{{ destination.name }}</v-card-title>
             <v-card-subtitle>{{ destination.location }}</v-card-subtitle>
           </v-card>
@@ -64,9 +82,18 @@
           <v-card class="card">
             <v-card-title class="themeSyle">{{ theme }}</v-card-title>
             <hr class="custom-line" />
-            <v-row v-for="(event, id) in themeEvent1" :key="id" class="mb-4">
+            <v-row
+              v-for="(event, id) in themeEvent[index]"
+              :key="id"
+              class="mb-4"
+            >
               <v-col cols="4">
-                <v-card class="picture"></v-card>
+                <v-img
+                  :src="event.img"
+                  cover
+                  class="picture"
+                  loading="lazy"
+                ></v-img>
               </v-col>
               <v-col cols="8" class="eventContent">
                 <v-card-title class="eventName">{{ event.name }}</v-card-title>
@@ -75,12 +102,14 @@
                 }}</v-card-subtitle>
               </v-col>
             </v-row>
+
             <div class="bottom_interval"></div>
           </v-card>
         </v-col>
       </v-row>
     </div>
 
+    <!-- 可选择的其他地点 -->
     <div class="next-section">
       <h2 class="text-center">Where to next?</h2>
       <v-row>
@@ -90,7 +119,13 @@
           cols="12"
           sm="2"
         >
-          <v-card class="next-card">{{ destination.name }}</v-card>
+          <v-card class="next-card">
+            <v-img :src="picArray[index]" height="200px" cover>
+              <v-card-title class="next-card-title">{{
+                destination.name
+              }}</v-card-title></v-img
+            >
+          </v-card>
         </v-col>
       </v-row>
       <v-btn class="dest-btn">See All</v-btn>
@@ -101,7 +136,18 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import axios from "axios";
-
+import GreatWall from "../assets/GreatWall.jpg";
+import Liberty from "../assets/Liberty.jpg";
+import Fuji from "../assets/Fuji.jpg";
+import Eiffel from "../assets/Eiffel Tower.jpg";
+import Tokyo from "../assets/Tokyo.jpg";
+import Sydney from "../assets/Sydney.jpg";
+import banner1 from "../assets/banner.jpg";
+import banner2 from "../assets/banner2.jpg";
+import Sing from "../assets/Singapore.jpg";
+import Bali from "../assets/Bali.jpg";
+const bannerArray = [banner1, banner2];
+const picArray = [GreatWall, Liberty, Fuji, Eiffel, Tokyo, Sydney];
 const destinations = ref<{ name: string; location: string; imgurl: string }[]>(
   []
 );
@@ -119,21 +165,55 @@ const themes = [
   "Top Things to do in Bali",
 ];
 
-let themeEvent1 = [
-  { id: 1, name: "Tokyo Disney AAA", desc: "Tokyo Disneyland" },
-  {
-    id: 2,
-    name: "Tokyo Disney BBB",
-    desc: "Tokyo Disneyland & Tokyo DisneySea Park Tickets",
-  },
-  {
-    id: 3,
-    name: "Tokyo Disney CCC",
-    desc: "Tokyo Disneyland & Tokyo DisneySea Park Tickets",
-  },
+let themeEvent = [
+  [
+    { id: 1, name: "Tokyo Disney AAA", desc: "Tokyo Disneyland", img: Tokyo },
+    {
+      id: 2,
+      name: "Tokyo Disney BBB",
+      desc: "Tokyo Disneyland & Tokyo DisneySea Park Tickets",
+      img: Tokyo,
+    },
+    {
+      id: 3,
+      name: "Tokyo Disney CCC",
+      desc: "Tokyo Disneyland & Tokyo DisneySea Park Tickets",
+      img: Tokyo,
+    },
+  ],
+  [
+    { id: 1, name: "Tokyo Disney DDD", desc: "Tokyo Disneyland", img: Sing },
+    {
+      id: 2,
+      name: "Tokyo Disney EEE",
+      desc: "Tokyo Disneyland & Tokyo DisneySea Park Tickets",
+      img: Sing,
+    },
+    {
+      id: 3,
+      name: "Tokyo Disney FFF",
+      desc: "Tokyo Disneyland & Tokyo DisneySea Park Tickets",
+      img: Sing,
+    },
+  ],
+  [
+    { id: 1, name: "Tokyo Disney GGG", desc: "Tokyo Disneyland", img: Bali },
+    {
+      id: 2,
+      name: "Tokyo Disney HHH",
+      desc: "Tokyo Disneyland & Tokyo DisneySea Park Tickets",
+      img: Bali,
+    },
+    {
+      id: 3,
+      name: "Tokyo Disney III",
+      desc: "Tokyo Disneyland & Tokyo DisneySea Park Tickets",
+      img: Bali,
+    },
+  ],
 ];
 
-// 获取数据
+// 用异步获取数据
 const fetchDestinations = async () => {
   try {
     const response = await axios.get("http://localhost:8080/spots");
@@ -176,6 +256,8 @@ onMounted(fetchDestinations);
   width: 75px;
   margin: 10px;
   left: 10px;
+  border-radius: 16px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 .bottom_interval {
   width: 100%;
@@ -214,6 +296,7 @@ onMounted(fetchDestinations);
   z-index: 2;
   text-align: left;
   left: 8%;
+  color: white;
 }
 
 .search-box {
@@ -235,9 +318,20 @@ onMounted(fetchDestinations);
   height: 64px;
 }
 
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3); /* 黑色透明遮罩 */
+  z-index: 1;
+}
+
 .color-content {
   display: flex;
   height: 100%;
+  width: 100%;
   justify-content: center;
   align-content: center;
   z-index: 1;
@@ -250,6 +344,12 @@ onMounted(fetchDestinations);
 .card {
   max-width: 400px;
   margin: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .text-center {
@@ -275,7 +375,21 @@ onMounted(fetchDestinations);
   margin-top: 30px;
   width: 400px;
 }
+
 .next-card {
   height: 200px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.next-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.next-card-title {
+  margin-top: 90%;
+  font-size: small;
+  color: azure;
+  font-weight: 400;
 }
 </style>
