@@ -56,6 +56,7 @@ import router from "../router";
 const userStore = useUserStore();
 const dialog = ref(false);
 
+userStore.loadFromStorage();
 const logout = () => {
   userStore.logout();
   router.push("/");

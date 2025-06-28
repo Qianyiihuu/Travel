@@ -48,18 +48,21 @@
           sm="4"
           class="column-interval"
         >
-          <!-- <v-card class="card">
-            <v-card
-              :color="colors[index]"
-              width="100%"
+          <v-card
+            class="card"
+            width="90%"
+            @click="gotoDetail(destination.id)"
+            hover
+            :ripple="false"
+            :elevation="0"
+            style="cursor: pointer; background-color: white"
+          >
+            <v-img
+              :src="picArray[index]"
               height="200px"
-              src="../assets/GreatWall.jpg"
-            ></v-card>
-            <v-card-title>{{ destination.name }}</v-card-title>
-            <v-card-subtitle>{{ destination.location }}</v-card-subtitle>
-          </v-card> -->
-          <v-card class="card" width="90%">
-            <v-img :src="picArray[index]" height="200px" cover></v-img>
+              cover
+              loading="lazy"
+            ></v-img>
             <v-card-title>{{ destination.name }}</v-card-title>
             <v-card-subtitle>{{ destination.location }}</v-card-subtitle>
           </v-card>
@@ -119,8 +122,13 @@
           cols="12"
           sm="2"
         >
-          <v-card class="next-card">
-            <v-img :src="picArray[index]" height="200px" cover>
+          <v-card
+            class="next-card"
+            :ripple="false"
+            @click="gotoDetail(destination.id)"
+            hover
+          >
+            <v-img :src="picArray[index]" height="200px" loading="lazy" cover>
               <v-card-title class="next-card-title">{{
                 destination.name
               }}</v-card-title></v-img
@@ -136,6 +144,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import { useRouter } from "vue-router";
 import GreatWall from "../assets/GreatWall.jpg";
 import Liberty from "../assets/Liberty.jpg";
 import Fuji from "../assets/Fuji.jpg";
@@ -146,11 +155,13 @@ import banner1 from "../assets/banner.jpg";
 import banner2 from "../assets/banner2.jpg";
 import Sing from "../assets/Singapore.jpg";
 import Bali from "../assets/Bali.jpg";
+
+const router = useRouter();
 const bannerArray = [banner1, banner2];
 const picArray = [GreatWall, Liberty, Fuji, Eiffel, Tokyo, Sydney];
-const destinations = ref<{ name: string; location: string; imgurl: string }[]>(
-  []
-);
+const destinations = ref<
+  { id: number; name: string; location: string; imgurl: string }[]
+>([]);
 const colors = [
   "success",
   "warning",
@@ -226,6 +237,10 @@ const fetchDestinations = async () => {
 
 // 组件加载时获取数据
 onMounted(fetchDestinations);
+
+function gotoDetail(id: number) {
+  router.push(`/destinations/${id}`);
+}
 
 // 点击 Explore 按钮时跳转
 // const goToDestination = (destination: any) => {
@@ -345,6 +360,7 @@ onMounted(fetchDestinations);
   max-width: 400px;
   margin: 10px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  --v-theme-overlay-multiplier: 0 !important;
 }
 
 .card:hover {
@@ -374,11 +390,13 @@ onMounted(fetchDestinations);
 .dest-btn {
   margin-top: 30px;
   width: 400px;
+  --v-theme-overlay-multiplier: 0 !important;
 }
 
 .next-card {
   height: 200px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  --v-theme-overlay-multiplier: 0 !important;
 }
 
 .next-card:hover {
