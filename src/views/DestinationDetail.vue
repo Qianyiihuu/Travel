@@ -28,32 +28,75 @@
         <button class="productBtn">选择产品</button>
       </div>
     </div>
-    <ul>
-      <li v-for="project in destination.projects" :key="project.name">
-        {{ project.name }} - ￥{{ project.price }}
-      </li>
-    </ul>
+
     <div class="product-item">
       <div class="block-item"></div>
       <h3>套餐选项</h3>
     </div>
+    <div class="chooseProduct">
+      <div
+        v-for="(project, index) in filteredProducts"
+        :key="project.name"
+        @click="selectProduct(index, project)"
+        :class="['product-item', { active: expandedIndex === index }]"
+      >
+        <div class="item-formal">{{ project.content }}</div>
+      </div>
+
+      <div v-if="selectedProduct" class="product-detail">
+        <p>价格：￥{{ selectedProduct.price }}</p>
+        <label class="quantity-item">
+          数量：
+          <input type="number" min="1" v-model.number="quantity" />
+        </label>
+        <h3>总价：{{ totalPrice }}</h3>
+        <button class="purchase">加入购物车</button>
+        <button class="purchase">购买</button>
+      </div>
+    </div>
+
+    <div class="product-item">
+      <div class="block-item"></div>
+      <h3>你还喜欢...</h3>
+    </div>
+    <otherDest />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import destinationsData from "../mock/destinationdetail.json";
+import productData from "../mock/productdetail.json";
+import otherDest from "../components/otherDest.vue";
 
 // 获取当前路由对象
 const route = useRoute();
 const destination = ref();
-
+const desId = Number(route.params.id);
+const expandedIndex = ref<number | null>(null);
+const selectedProduct = ref<any | null>(null);
+const quantity = ref<number>(1);
 // 获取路由参数中的 id
 const id = Number(route.params.id);
 
+const filteredProducts = ref();
+
+const selectProduct = (index: number, product: any) => {
+  expandedIndex.value = index;
+  selectedProduct.value = product;
+  quantity.value = 1;
+};
+
+const totalPrice = computed(() => {
+  return (selectedProduct.value?.price || 0) * quantity.value;
+});
+
 onMounted(() => {
   destination.value = destinationsData.data.find((d: any) => d.id === id);
+  filteredProducts.value = productData.data.filter(
+    (p: any) => p.scenicId === desId
+  );
 });
 
 const getImageUrl = (imgName: string) => {
@@ -166,5 +209,47 @@ const getImageUrl = (imgName: string) => {
   height: 25px;
   border-radius: 20px;
   background-color: rgb(153, 200, 227);
+}
+.chooseProduct {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  list-style: none;
+  width: 70%;
+  height: auto;
+  margin-left: 20px;
+  background-color: #cacaca60;
+  border-radius: 8px;
+  padding: 20px 10px;
+}
+
+.item-formal {
+  box-sizing: border-box;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f9f9f9;
+  width: auto;
+}
+.product-detail {
+  margin-left: 20px;
+}
+
+.quantity-item {
+  border-radius: 8px;
+}
+
+.purchase {
+  margin-left: auto;
+  margin-right: 10px;
+  height: 50px;
+  width: auto;
+  min-width: 100px;
+  padding: 10px 16px;
+  background-color: rgb(153, 200, 227);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
 </style>
