@@ -98,7 +98,7 @@ img {
 
 .v-application {
   width: 100%;
-  overflow-x: hidden; /* 禁止水平滚动 */
+  /* overflow-x: hidden; 禁止水平滚动 */
   background-color: #f5f5f5 !important;
 }
 

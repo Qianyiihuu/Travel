@@ -2,10 +2,13 @@
   <div v-if="destination" class="destination-card">
     <h2 class="destination-title">景点详情 > {{ destination.name }}</h2>
     <div class="destination-tag-position">
-      <div class="destination-tag">英语/泰语/普通话</div>
-      <div class="destination-tag">拼团&私人团</div>
-      <div class="destination-tag">可选酒店接送</div>
-      <div class="destination-tag">活动时长：8小时-9小时</div>
+      <div
+        v-for="(tag, index) in destination.tag"
+        :key="index"
+        class="destination-tag"
+      >
+        {{ tag }}
+      </div>
     </div>
     <div class="destination-tag-position">
       <div class="score">4.6/5</div>
@@ -50,7 +53,7 @@
           <input type="number" min="1" v-model.number="quantity" />
         </label>
         <h3>总价：{{ totalPrice }}</h3>
-        <button class="purchase">加入购物车</button>
+        <button class="purchase" @click="addToCart">加入购物车</button>
         <button class="purchase">购买</button>
       </div>
     </div>
@@ -69,9 +72,11 @@ import { useRoute } from "vue-router";
 import destinationsData from "../mock/destinationdetail.json";
 import productData from "../mock/productdetail.json";
 import otherDest from "../components/otherDest.vue";
+import { useCarStore } from "../store/cart";
 
 // 获取当前路由对象
 const route = useRoute();
+const useCart = useCarStore();
 const destination = ref();
 const desId = Number(route.params.id);
 const expandedIndex = ref<number | null>(null);
@@ -81,17 +86,6 @@ const quantity = ref<number>(1);
 const id = Number(route.params.id);
 
 const filteredProducts = ref();
-
-const selectProduct = (index: number, product: any) => {
-  expandedIndex.value = index;
-  selectedProduct.value = product;
-  quantity.value = 1;
-};
-
-const totalPrice = computed(() => {
-  return (selectedProduct.value?.price || 0) * quantity.value;
-});
-
 onMounted(() => {
   destination.value = destinationsData.data.find((d: any) => d.id === id);
   filteredProducts.value = productData.data.filter(
@@ -99,9 +93,48 @@ onMounted(() => {
   );
 });
 
+const selectProduct = (index: number, product: any) => {
+  expandedIndex.value = index;
+  selectedProduct.value = product;
+};
+
+const totalPrice = computed(() => {
+  if (selectedProduct.value.quantity === 0) {
+    return "产品已售罄";
+  } else {
+    return (selectedProduct.value?.price || 0) * quantity.value;
+  }
+});
+
 const getImageUrl = (imgName: string) => {
   return new URL(`../assets/${imgName}`, import.meta.url).href;
 };
+
+function addToCart() {
+  try {
+    const product = selectedProduct.value;
+
+    if (!product) {
+      alert("未选择商品");
+      return;
+    }
+
+    if (product.quantity === 0) {
+      alert("商品数量为 0，无法添加到购物车");
+      return;
+    }
+
+    useCart.addToCart({
+      id: product.id,
+      title: product.content, // 注意字段是否是 content，还是 title？
+      price: product.price,
+    });
+
+    console.log("添加成功");
+  } catch (error) {
+    console.error("添加失败", error);
+  }
+}
 </script>
 
 <style>
@@ -183,7 +216,7 @@ const getImageUrl = (imgName: string) => {
 }
 
 .product-title {
-  width: suto;
+  width: auto;
   padding: 8px 10px;
   font-size: 18px;
   font-weight: 800;
@@ -233,6 +266,7 @@ const getImageUrl = (imgName: string) => {
 }
 .product-detail {
   margin-left: 20px;
+  width: 100%;
 }
 
 .quantity-item {

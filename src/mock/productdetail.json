@@ -5,31 +5,146 @@
       "id": 101,
       "scenicId": 1,
       "content": "[含餐+酒店接送]长城一日游",
-      "price": "500"
+      "price": "500",
+      "quantity": 100
     },
     {
       "id": 102,
       "scenicId": 1,
       "content": "[不含餐+集合]长城一日游",
-      "price": "800"
+      "price": "800",
+      "quantity": 100
     },
     {
       "id": 103,
       "scenicId": 1,
       "content": "长城一日游+升降梯上+雪橇下",
-      "price": "300"
+      "price": "300",
+      "quantity": 100
     },
     {
       "id": 104,
       "scenicId": 1,
       "content": "长城一日游+升降梯上+雪橇下+讲解",
-      "price": "300"
+      "price": "300",
+      "quantity": 0
     },
     {
       "id": 105,
       "scenicId": 1,
-      "content": "长城一日游+升降梯上+雪橇下+讲解",
-      "price": "300"
+      "content": "长城一日游+升降梯上+雪橇下+讲解2",
+      "price": "300",
+      "quantity": 200
+    },
+
+    {
+      "id": 201,
+      "scenicId": 2,
+      "content": "自由女神像游船票（含语音讲解）",
+      "price": "150",
+      "quantity": 80
+    },
+    {
+      "id": 202,
+      "scenicId": 2,
+      "content": "自由女神像+自由岛博物馆导览",
+      "price": "200",
+      "quantity": 60
+    },
+    {
+      "id": 203,
+      "scenicId": 2,
+      "content": "[VIP快速通道]自由女神像直达+导游讲解",
+      "price": "280",
+      "quantity": 50
+    },
+
+    {
+      "id": 301,
+      "scenicId": 3,
+      "content": "富士山一日游（含巴士接送+午餐）",
+      "price": "500",
+      "quantity": 90
+    },
+    {
+      "id": 302,
+      "scenicId": 3,
+      "content": "富士山+忍野八海+河口湖经典路线",
+      "price": "450",
+      "quantity": 75
+    },
+    {
+      "id": 303,
+      "scenicId": 3,
+      "content": "富士山拍照打卡半日游（不含餐）",
+      "price": "300",
+      "quantity": 100
+    },
+
+    {
+      "id": 401,
+      "scenicId": 4,
+      "content": "埃菲尔铁塔登塔门票（免排队）",
+      "price": "250",
+      "quantity": 120
+    },
+    {
+      "id": 402,
+      "scenicId": 4,
+      "content": "埃菲尔铁塔+塞纳河游船套票",
+      "price": "400",
+      "quantity": 70
+    },
+    {
+      "id": 403,
+      "scenicId": 4,
+      "content": "[夜景限定] 埃菲尔铁塔夜游+香槟晚宴",
+      "price": "850",
+      "quantity": 30
+    },
+
+    {
+      "id": 501,
+      "scenicId": 5,
+      "content": "东京塔展望台门票（含主展厅）",
+      "price": "180",
+      "quantity": 110
+    },
+    {
+      "id": 502,
+      "scenicId": 5,
+      "content": "东京塔夜景门票+纪念品",
+      "price": "230",
+      "quantity": 85
+    },
+    {
+      "id": 503,
+      "scenicId": 5,
+      "content": "[亲子推荐] 东京塔+水族馆联票",
+      "price": "320",
+      "quantity": 60
+    },
+
+    {
+      "id": 601,
+      "scenicId": 6,
+      "content": "悉尼歌剧院外观+导览体验",
+      "price": "200",
+      "quantity": 90
+    },
+    {
+      "id": 602,
+      "scenicId": 6,
+      "content": "悉尼歌剧院内部剧场参观（含讲解）",
+      "price": "350",
+      "quantity": 50
+    },
+    {
+      "id": 603,
+      "scenicId": 6,
+      "content": "悉尼歌剧院+港湾游船晚餐",
+      "price": "680",
+      "quantity": 40
     }
   ]
 }

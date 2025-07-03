@@ -22,6 +22,7 @@
       </v-col>
     </v-row>
   </div>
+  <div class="interval"></div>
 </template>
 
 <script setup lang="ts">
@@ -132,6 +133,9 @@ function gotoDetail(id: number) {
 </script>
 
 <style scoped>
+.interval {
+  height: 20px;
+}
 .text-center {
   text-align: left;
   margin-left: 10px;
