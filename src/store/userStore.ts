@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { useCarStore } from "./cart";
 
 export const useUserStore = defineStore("user", {
   state: () => ({
@@ -11,10 +12,17 @@ export const useUserStore = defineStore("user", {
       this.username = user;
       this.isLoggedIn = true;
       localStorage.setItem("user", JSON.stringify({ username: user }));
+
+      const cartStore = useCarStore();
+      cartStore.loadCart();
     },
     logout() {
+      const cartStore = useCarStore();
+      cartStore.clearCart();
+
       this.username = "";
-      (this.isLoggedIn = false), localStorage.removeItem("user");
+      this.isLoggedIn = false;
+      localStorage.removeItem("user");
     },
 
     loadFromStorage() {
@@ -23,6 +31,9 @@ export const useUserStore = defineStore("user", {
         const { username } = JSON.parse(data);
         this.username = username;
         this.isLoggedIn = true;
+
+        const cartStore = useCarStore();
+        cartStore.loadCart();
       }
     },
   },

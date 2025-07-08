@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { useUserStore } from "./userStore";
 
 export const useCarStore = defineStore("cart", {
   state: () => ({
@@ -17,18 +18,35 @@ export const useCarStore = defineStore("cart", {
       } else {
         this.cartItems.push({ ...product, quantity: 1 });
       }
+      this.saveCart();
     },
     clearCart() {
       this.cartItems = [];
+      this.saveCart();
+    },
+    saveCart() {
+      const userStore = useUserStore();
+      if (userStore.isLoggedIn) {
+        const key = `cart-${userStore.username}`;
+        localStorage.setItem(key, JSON.stringify(this.cartItems));
+      }
     },
     loadCart() {
-      const saved = localStorage.getItem("cart");
-      if (saved) {
-        try {
-          this.cartItems = JSON.parse(saved);
-        } catch (e) {
-          console.error("购物车数据解析失败:", e);
+      const userStore = useUserStore();
+      if (userStore.isLoggedIn) {
+        const key = `cart-${userStore.username}`;
+        const saved = localStorage.getItem(key);
+        if (saved) {
+          try {
+            this.cartItems = JSON.parse(saved);
+          } catch (e) {
+            console.error("购物车解析失败", e);
+          }
+        } else {
+          this.cartItems = [];
         }
+      } else {
+        this.cartItems = [];
       }
     },
   },

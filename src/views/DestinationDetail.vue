@@ -26,9 +26,11 @@
     </div>
     <div class="row-between">
       <p class="destination-content-position">{{ destination.description }}</p>
-      <div class="product">
-        <div class="product-title">景点门票：200元起</div>
-        <button class="productBtn">选择产品</button>
+      <div class="product-container">
+        <div class="product">
+          <div class="product-title">景点门票：200元起</div>
+          <button class="productBtn">选择产品</button>
+        </div>
       </div>
     </div>
 
@@ -73,9 +75,11 @@ import destinationsData from "../mock/destinationdetail.json";
 import productData from "../mock/productdetail.json";
 import otherDest from "../components/otherDest.vue";
 import { useCarStore } from "../store/cart";
+import { useUserStore } from "../store/userStore";
 
 // 获取当前路由对象
 const route = useRoute();
+const userStore = useUserStore();
 const useCart = useCarStore();
 const destination = ref();
 const desId = Number(route.params.id);
@@ -111,6 +115,10 @@ const getImageUrl = (imgName: string) => {
 };
 
 function addToCart() {
+  if (!userStore.isLoggedIn) {
+    alert("请先登录后再加入购物车");
+    return;
+  }
   try {
     const product = selectedProduct.value;
 
@@ -197,9 +205,13 @@ function addToCart() {
   background-color: rgb(153, 200, 227, 0.3);
   padding: 20px 10px;
   width: 70%;
+  height: 200px;
   border-radius: 8px;
 }
 
+.product-container {
+  height: 200px;
+}
 .product {
   margin: 10px 20px;
   display: flex;

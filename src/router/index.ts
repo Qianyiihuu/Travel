@@ -3,6 +3,7 @@ import Home from "../views/Home.vue";
 import Destination from "../views/Destination.vue";
 import About from "../views/About.vue";
 import DestinationDetail from "../views/DestinationDetail.vue";
+import CartView from "../views/CartView.vue";
 
 const routes = [
   {
@@ -15,7 +16,7 @@ const routes = [
     component: Home,
   },
   {
-    path: "/destinaitons",
+    path: "/destinations",
     name: "destination",
     component: Destination,
   },
@@ -23,6 +24,11 @@ const routes = [
     path: "/about",
     name: "about",
     component: About,
+  },
+  {
+    path: "/cart",
+    name: "cart",
+    component: CartView,
   },
   {
     path: "/destinations/:id",

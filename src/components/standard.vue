@@ -34,13 +34,35 @@
               <v-list-item-title>购物车为空</v-list-item-title>
             </v-list-item>
 
-            <v-list-item v-for="item in cartStore.cartItems" :key="item.id">
+            <!-- <v-list-item v-for="item in cartStore.cartItems" :key="item.id">
               <v-list-item-content>
                 <v-list-item-title
-                  >{{ item.title }} × {{ item.quantity }}</v-list-item-title
+                  >{{ item.title }} * {{ item.quantity }}</v-list-item-title
                 >
               </v-list-item-content>
-            </v-list-item>
+            </v-list-item> -->
+            <v-card
+              v-for="item in cartStore.cartItems"
+              :key="item.id"
+              class="mb-2 pa-2"
+              elevation="2"
+            >
+              <v-card-title class="text-body-1"
+                >{{ item.title }}
+                <v-icon>mdi-delete-outline</v-icon>
+              </v-card-title>
+
+              <v-card-subtitle>数量：{{ item.quantity }}</v-card-subtitle>
+              <v-card-text class="text-caption text-right">
+                单价：¥{{ item.price }}，小计：¥{{ item.price * item.quantity }}
+              </v-card-text>
+            </v-card>
+            <div class="CartBar">
+              <div class="CartPrice">购物车总价：{{ totalPrice }}</div>
+              <div class="BtnDiv">
+                <v-btn class="cartBtn" to="/cart">前往购物车</v-btn>
+              </div>
+            </div>
           </v-list>
         </v-menu>
       </div>
@@ -99,13 +121,15 @@ const logout = () => {
 };
 
 const dropdownVisible = ref(false);
-const toggleDropdown = () => {
-  dropdownVisible.value = !dropdownVisible.value;
-};
 
 const totalQuantity = computed(() =>
   cartStore.cartItems.reduce((sum, item) => sum + item.quantity, 0)
 );
+
+const totalPrice = computed(() =>
+  cartStore.cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+);
+
 onMounted(() => {
   cartStore.loadCart();
 });
@@ -122,6 +146,10 @@ watch(
 </script>
 
 <style>
+.text-body-1 {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
 .cart-wrapper {
   position: relative;
   display: inline-block;
@@ -167,5 +195,29 @@ watch(
   color: #ff4040;
   text-align: left;
   margin-left: 10%;
+}
+
+.CartBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-top: 1px solid #eee;
+  background-color: #fff;
+}
+
+.CartPrice {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.cartBtn {
+  background-color: #ff5b00;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  padding: 10px 20px;
+  --v-theme-overlay-multiplier: 0 !important;
 }
 </style>
