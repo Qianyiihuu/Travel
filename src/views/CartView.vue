@@ -30,7 +30,7 @@
   <v-card class="CartBar">
     <div class="CartPrice">购物车总价：{{ totalPrice }}</div>
     <div class="BtnDiv">
-      <v-btn class="cartBtn" to="/cart">前往结算</v-btn>
+      <v-btn class="cartBtn" @click="handleGoToPaymentFromCart">前往结算</v-btn>
     </div>
   </v-card>
 </template>
@@ -40,10 +40,11 @@ import { useUserStore } from "../store/userStore";
 import { useCarStore } from "../store/cart";
 import { computed, onMounted } from "vue";
 import productData from "../mock/productdetail.json";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { ref } from "vue";
 
 const route = useRoute();
+const router = useRouter();
 const id = Number(route.params.id);
 const userStore = useUserStore();
 const useCart = useCarStore();
@@ -91,6 +92,16 @@ function countMinus(item) {
   if (item.quantity > 1) {
     item.quantity--;
   }
+}
+
+function handleGoToPaymentFromCart() {
+  router.push({
+    path: "/payment",
+    query: {
+      from: "cart", // ✅ 标识来源是购物车
+      sourcePage: route.fullPath, // ✅ 记录来源路径，便于返回
+    },
+  });
 }
 </script>
 

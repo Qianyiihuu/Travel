@@ -4,6 +4,7 @@ import Destination from "../views/Destination.vue";
 import About from "../views/About.vue";
 import DestinationDetail from "../views/DestinationDetail.vue";
 import CartView from "../views/CartView.vue";
+import Payment from "../views/Payment.vue";
 
 const routes = [
   {
@@ -29,6 +30,19 @@ const routes = [
     path: "/cart",
     name: "cart",
     component: CartView,
+  },
+  {
+    path: "/payment",
+    name: "payment",
+    component: Payment,
+    props: (route: {
+      query: { from: any; productId: any; quantity: any; sourcePage: any };
+    }) => ({
+      from: route.query.from, // 'cart' or 'direct'
+      productId: route.query.productId || null,
+      quantity: route.query.quantity || 1,
+      sourcePage: route.query.sourcePage || null,
+    }),
   },
   {
     path: "/destinations/:id",

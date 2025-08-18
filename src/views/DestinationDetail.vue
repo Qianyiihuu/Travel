@@ -28,14 +28,16 @@
       <p class="destination-content-position">{{ destination.description }}</p>
       <div class="product-container">
         <div class="product">
-          <div class="product-title">景点门票：200元起</div>
-          <button class="productBtn">选择产品</button>
+          <div class="product-title">
+            景点门票：{{ getMinPriceProduct.price }}元起
+          </div>
+          <button @click="scrollToSection" class="productBtn">选择产品</button>
         </div>
       </div>
     </div>
 
     <div class="product-item">
-      <div class="block-item"></div>
+      <div ref="targetSection" class="block-item"></div>
       <h3>套餐选项</h3>
     </div>
     <div class="chooseProduct">
@@ -45,7 +47,7 @@
         @click="selectProduct(index, project)"
         :class="['product-item', { active: expandedIndex === index }]"
       >
-        <div class="item-formal">{{ project.content }}</div>
+        <div class="item-formal">{{ project.title }}</div>
       </div>
 
       <div v-if="selectedProduct" class="product-detail">
@@ -56,7 +58,7 @@
         </label>
         <h3>总价：{{ totalPrice }}</h3>
         <button class="purchase" @click="addToCart">加入购物车</button>
-        <button class="purchase">购买</button>
+        <button class="purchase" @click="gotoPayment">付款</button>
       </div>
     </div>
 
@@ -71,6 +73,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
+import { useRouter } from "vue-router";
 import destinationsData from "../mock/destinationdetail.json";
 import productData from "../mock/productdetail.json";
 import otherDest from "../components/otherDest.vue";
@@ -79,6 +82,7 @@ import { useUserStore } from "../store/userStore";
 
 // 获取当前路由对象
 const route = useRoute();
+const router = useRouter();
 const userStore = useUserStore();
 const useCart = useCarStore();
 const destination = ref();
@@ -86,6 +90,7 @@ const desId = Number(route.params.id);
 const expandedIndex = ref<number | null>(null);
 const selectedProduct = ref<any | null>(null);
 const quantity = ref<number>(1);
+const targetSection = ref<HTMLElement | null>(null);
 // 获取路由参数中的 id
 const id = Number(route.params.id);
 
@@ -134,7 +139,7 @@ function addToCart() {
 
     useCart.addToCart({
       id: product.id,
-      title: product.content, // 注意字段是否是 content，还是 title？
+      title: product.title, // 注意字段是否是 content，还是 title？
       price: product.price,
     });
 
@@ -142,6 +147,33 @@ function addToCart() {
   } catch (error) {
     console.error("添加失败", error);
   }
+}
+
+function scrollToSection() {
+  targetSection.value?.scrollIntoView({ behavior: "smooth" });
+}
+
+const getMinPriceProduct = computed(() => {
+  if (!filteredProducts.value || filteredProducts.value.length === 0)
+    return null;
+
+  return filteredProducts.value.reduce((min: any, curr: any) => {
+    return curr.price < min.price ? curr : min;
+  });
+});
+
+function gotoPayment() {
+  router.push({
+    path: "/payment",
+    query: {
+      from: "direct",
+      productId: selectedProduct.value.id,
+      quantity: 1,
+      sourcePage: route.fullPath,
+    },
+  });
+
+  console.log("跳转 productId 是：", selectedProduct.value.id);
 }
 </script>
 
@@ -292,8 +324,9 @@ function addToCart() {
   width: auto;
   min-width: 100px;
   padding: 10px 16px;
-  background-color: rgb(153, 200, 227);
-  color: white;
+  background-color: rgb(154, 199, 225);
+  color: #000;
+  font-weight: 600;
   border: none;
   border-radius: 6px;
   cursor: pointer;
