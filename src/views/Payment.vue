@@ -61,15 +61,10 @@
               </v-card-text>
             </v-card>
 
-            <v-card
-              v-for="item in checkoutItems"
-              :key="item.id"
-              class="cart-card"
-              elevation="2"
-            >
+            <v-card class="cart-card" elevation="2">
               <v-card-title class="basic-title">基本信息</v-card-title>
               <v-card-subtitle class="basic-information"
-                >姓名
+                >游客姓名
                 <input type="text" />
               </v-card-subtitle>
               <v-card-subtitle class="basic-information"
@@ -89,18 +84,27 @@
                 <input type="text" />
               </v-card-subtitle>
             </v-card>
+
+            <v-card class="CartBar">
+              <div class="CartPrice">总价：{{ totalPrice }}</div>
+              <div class="BtnDiv">
+                <v-btn class="cartBtn">支付</v-btn>
+              </div>
+            </v-card>
           </div>
         </v-card>
       </v-col>
       <v-col cols="4">
-        <v-card class="otherInfo"></v-card>
+        <v-card class="otherInfo">
+          <div class="CartPrice">总价：{{ totalPrice }}</div>
+        </v-card>
       </v-col>
     </v-row>
   </div>
 </template>
 <script setup lang="ts">
 import { useCarStore } from "../store/cart";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import productData from "../mock/productdetail.json";
 
 // ✅ 从路由 props 接收参数
@@ -151,9 +155,34 @@ function countMinus(item: any) {
     item.quantity--;
   }
 }
+
+const totalPrice = computed(() =>
+  checkoutItems.value
+    .filter((item) => item.selected)
+    .reduce((sum, item) => sum + item.price * item.quantity, 0)
+);
 </script>
 
 <style scoped>
+.choose-type {
+  border: 1px solid #747272; /* 边框 */
+  border-radius: 3px; /* 圆角 */
+  padding: 8px; /* 内边距 */
+  outline: none; /* 去掉默认外边框 */
+  height: 28px; /* 下拉框高度（8px 太小，改大一点） */
+  margin-left: 2px; /* 左边距 */
+  background-color: #fff; /* 背景色 */
+  font-size: 14px; /* 字体大小 */
+}
+input {
+  border: 1px solid #747272; /* 2px 实线，深灰色 */
+  border-radius: 3px; /* 圆角，让边框更好看 */
+  padding: 8px; /* 内边距，避免文字贴边 */
+  outline: none; /* 去掉默认的高亮外边框 */
+  height: 8px;
+  margin-left: 2px;
+}
+
 .basic-title {
   font-size: 18px;
   font-weight: 800;
@@ -162,6 +191,7 @@ function countMinus(item: any) {
   font-size: 14px;
   font-weight: 600;
   padding-top: 5px;
+  margin: 3px;
 }
 .process-info {
   padding: 12px;
