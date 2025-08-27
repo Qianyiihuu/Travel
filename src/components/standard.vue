@@ -11,6 +11,7 @@
 
       <v-btn text to="/home">Home</v-btn>
       <!-- <v-btn text to="/destinations">Destinations</v-btn>  //景点页面，待做 -->
+      <v-btn text to="/chat">AI-Helper</v-btn>
       <v-btn text to="/about">About</v-btn>
 
       <div class="cart-wrapper">

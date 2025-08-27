@@ -5,6 +5,7 @@ import About from "../views/About.vue";
 import DestinationDetail from "../views/DestinationDetail.vue";
 import CartView from "../views/CartView.vue";
 import Payment from "../views/Payment.vue";
+import Aichat from "../views/Aichat.vue";
 
 const routes = [
   {
@@ -20,6 +21,11 @@ const routes = [
     path: "/destinations",
     name: "destination",
     component: Destination,
+  },
+  {
+    path: "/chat",
+    name: "chat",
+    component: Aichat,
   },
   {
     path: "/about",
