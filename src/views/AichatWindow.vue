@@ -1,13 +1,18 @@
 <template>
-  <div class="chat">
-    <h2>AI Chat 助手</h2>
-    <div class="chat-window">
-      <div v-for="(msg, idx) in messages" :key="idx" class="chat-msg">
-        <div class="user-msg">
-          <div class="bubble user-bubble">{{ msg.question }}</div>
+  <div class="chat-window-popup">
+    <div class="chat-header">
+      <span>AI Chat 助手</span>
+      <button class="close-btn" @click="$emit('close')">×</button>
+    </div>
+    <div class="chat-body">
+      <div v-for="(msg, idx) in messages" :key="idx" class="chat-msg-row">
+        <!-- 用户消息 -->
+        <div v-if="msg.question" class="chat-msg user">
           <div class="avatar user-avatar"></div>
+          <div class="bubble user-bubble">{{ msg.question }}</div>
         </div>
-        <div class="ai-msg" v-if="msg.answer">
+        <!-- AI消息 -->
+        <div v-if="msg.answer" class="chat-msg ai">
           <div class="avatar ai-avatar"></div>
           <div class="bubble ai-bubble">
             <span v-html="renderMarkdown(msg.answer)"></span>
@@ -19,9 +24,9 @@
       <textarea
         v-model="userMessage"
         placeholder="请输入问题..."
-        rows="4"
+        rows="2"
       ></textarea>
-      <button @click="sendMessage" :disabled="loading">
+      <button @click="sendMessage" :disabled="loading || !userMessage">
         {{ loading ? "等待中..." : "发送" }}
       </button>
     </div>
@@ -30,7 +35,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { marked } from "marked"; // 新增
+import { marked } from "marked";
 const userMessage = ref("");
 const loading = ref(false);
 const messages = ref<{ question: string; answer: string }[]>([]);
@@ -72,7 +77,6 @@ const sendMessage = () => {
     if (!data || data === "[DONE]") {
       eventSource.close();
       loading.value = false;
-      // 保存最终回复
       messages.value[messages.value.length - 1].answer = aiReply;
       saveMessages();
       return;
@@ -101,85 +105,66 @@ const sendMessage = () => {
 </script>
 
 <style scoped>
-.chat {
-  max-width: 1200px;
-  margin: 40px auto;
-  padding: 24px 32px;
-  background: #fff;
+.chat-window-popup {
+  position: fixed;
+  right: 30px;
+  bottom: 80px;
+  z-index: 9999;
+  background: #f9f9f9;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  width: 370px;
+  max-height: 80vh;
   display: flex;
   flex-direction: column;
-  min-height: 600px;
-  padding-bottom: 90px; /* 留出输入框高度，避免内容被遮挡 */
+  overflow: hidden;
+  font-family: "Segoe UI", "PingFang SC", "Arial", sans-serif;
 }
-.chat-input {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #fff;
-  max-height: 80px;
-  padding: 8px 32px;
-  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
+
+.chat-header {
   display: flex;
-  flex-direction: row; /* 横向排列 */
-  align-items: center; /* 垂直居中 */
-  gap: 12px; /* 输入框和按钮间距 */
-  z-index: 100;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  background: #42b983;
+  color: #fff;
+  font-size: 18px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
 }
 
-.chat-input textarea {
-  flex: 1; /* 输入框占满剩余空间 */
-  margin-bottom: 0; /* 去掉下边距 */
-  height: 40px; /* 可选：高度更小 */
-  min-height: 32px;
-  max-height: 60px;
-  font-size: 14px;
-  padding: 8px;
+.close-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 0 4px;
 }
 
-.chat-input button {
-  margin-left: 0; /* 去掉自动右对齐 */
-  padding: 8px 20px;
-  font-size: 15px;
-  height: 40px; /* 与输入框高度一致 */
-  border-radius: 8px;
-}
-h2 {
-  text-align: center;
-  color: #42b983;
-  margin-bottom: 24px;
-  font-weight: 600;
-  letter-spacing: 2px;
-}
-
-.chat-window {
+.chat-body {
   flex: 1;
-  background: #f7f7f7;
-  padding: 24px 0;
-  border-radius: 8px;
-  margin-bottom: 0;
+  padding: 16px 12px;
   overflow-y: auto;
+  background: #f5f5f5;
+}
+
+.chat-msg-row {
+  margin-bottom: 10px;
 }
 
 .chat-msg {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 18px;
+  align-items: flex-end;
+  margin-bottom: 2px;
 }
 
-.user-msg {
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
+.user {
+  flex-direction: row-reverse;
 }
 
-.ai-msg {
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-end;
+.ai {
+  flex-direction: row;
 }
 
 .avatar {
@@ -203,13 +188,13 @@ h2 {
 }
 
 .bubble {
-  max-width: 60%;
-  padding: 12px 18px;
+  max-width: 70%;
+  padding: 8px 14px;
   border-radius: 18px;
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 15px;
+  line-height: 1.5;
   word-break: break-word;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 .user-bubble {
@@ -223,41 +208,43 @@ h2 {
   color: #222;
   border-bottom-left-radius: 4px;
   border: 1px solid #e0e0e0;
-  font-size: 15px;
-  text-align: left;
+  font-size: 13px; /* 字体缩小 */
+  text-align: left; /* 靠左对齐 */
 }
 
-textarea {
-  width: 100%;
-  font-family: inherit;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  padding: 10px;
-  font-size: 16px;
-  resize: none;
+.chat-input {
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
   background: #fafafa;
-  transition: border 0.2s;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  border-top: 1px solid #eee;
 }
 
-textarea:focus {
-  border-color: #42b983;
-  outline: none;
+.chat-input textarea {
+  flex: 1;
+  resize: none;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 15px;
+  margin-right: 8px;
+  background: #fff;
 }
 
-button {
-  padding: 10px 24px;
+.chat-input button {
+  padding: 7px 18px;
   background-color: #42b983;
   border: none;
   color: white;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 15px;
   cursor: pointer;
   transition: background 0.2s;
-  margin-left: auto;
-  display: block;
 }
 
-button:disabled {
+.chat-input button:disabled {
   background-color: #a5d6a7;
   cursor: not-allowed;
 }
