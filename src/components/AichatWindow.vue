@@ -4,104 +4,30 @@
       <span>AI Chat 助手</span>
       <button class="close-btn" @click="$emit('close')">×</button>
     </div>
-    <div class="chat-body">
-      <div v-for="(msg, idx) in messages" :key="idx" class="chat-msg-row">
-        <!-- 用户消息 -->
-        <div v-if="msg.question" class="chat-msg user">
-          <div class="avatar user-avatar"></div>
-          <div class="bubble user-bubble">{{ msg.question }}</div>
-        </div>
-        <!-- AI消息 -->
-        <div v-if="msg.answer" class="chat-msg ai">
-          <div class="avatar ai-avatar"></div>
-          <div class="bubble ai-bubble">
-            <span v-html="renderMarkdown(msg.answer)"></span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="chat-input">
-      <textarea
-        v-model="userMessage"
-        placeholder="请输入问题..."
-        rows="2"
-      ></textarea>
-      <button @click="sendMessage" :disabled="loading || !userMessage">
-        {{ loading ? "等待中..." : "发送" }}
-      </button>
-    </div>
+    <div class="chat-body"></div>
+    <div class="chat-input"></div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
 import { marked } from "marked";
-const userMessage = ref("");
-const loading = ref(false);
+import { ref, onMounted } from "vue";
 const messages = ref<{ question: string; answer: string }[]>([]);
 
 const saveMessages = () => {
   sessionStorage.setItem("chatMessages", JSON.stringify(messages.value));
 };
+
 const renderMarkdown = (text: string) => {
   return marked.parse(text);
 };
+
 onMounted(() => {
-  const saved = sessionStorage.getItem("chatMessages");
-  if (saved) {
-    messages.value = JSON.parse(saved);
+  const save = sessionStorage.getItem("chatMessages");
+  if (save) {
+    messages.value = JSON.parse(save);
   }
 });
-
-const sendMessage = () => {
-  if (!userMessage.value) return;
-
-  const question = userMessage.value;
-  messages.value.push({ question, answer: "" });
-  saveMessages();
-
-  userMessage.value = "";
-  loading.value = true;
-
-  const url = `http://localhost:8080/api/chat/stream?message=${encodeURIComponent(
-    question
-  )}`;
-
-  let aiReply = "";
-
-  const eventSource = new EventSource(url);
-
-  eventSource.onmessage = (event) => {
-    let data = event.data;
-
-    if (!data || data === "[DONE]") {
-      eventSource.close();
-      loading.value = false;
-      messages.value[messages.value.length - 1].answer = aiReply;
-      saveMessages();
-      return;
-    }
-
-    if (data.startsWith("data:")) data = data.slice(5).trim();
-    if (!data) return;
-
-    try {
-      const json = JSON.parse(data);
-      const content = json.choices?.[0]?.delta?.content;
-      if (content) {
-        aiReply += content.replace(/<\/?think>/g, "");
-        messages.value[messages.value.length - 1].answer = aiReply;
-        saveMessages();
-      }
-    } catch {
-      // 忽略非 JSON 数据，不要报错
-    }
-  };
-  eventSource.onerror = () => {
-    eventSource.close();
-    loading.value = false;
-  };
-};
 </script>
 
 <style scoped>
